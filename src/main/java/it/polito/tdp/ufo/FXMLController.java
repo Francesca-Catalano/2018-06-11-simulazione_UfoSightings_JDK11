@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.ufo.model.Model;
+import it.polito.tdp.ufo.model.YearAndCount;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -20,10 +21,10 @@ public class FXMLController {
     private URL location;
 
     @FXML
-    private ComboBox<?> boxAnno;
+    private ComboBox<YearAndCount> boxAnno;
 
     @FXML
-    private ComboBox<?> boxStato;
+    private ComboBox<String> boxStato;
 
     @FXML
     private TextArea txtResult;
@@ -35,6 +36,21 @@ public class FXMLController {
 
     @FXML
     void handleAvvistamenti(ActionEvent event) {
+    	Integer s = this.boxAnno.getValue().getAnno();
+    	if(s==null)
+    	{
+    		this.txtResult.appendText("Selezionare un anno!\n");
+    		return;
+    	}
+    	
+    	this.model.creaGrafo(s);
+    	
+    	this.txtResult.appendText("Vertici: "+this.model.vertexSet().size()+"\n");
+    	this.txtResult.appendText("Archi: "+this.model.vertexSet().size()+"\n");
+    	this.boxStato.getItems().addAll(this.model.vertexSet());
+		
+    	
+    	
 
     }
 
@@ -53,5 +69,11 @@ public class FXMLController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		if(this.model.getYearsAndCount()==null)
+		{
+			this.txtResult.appendText("Errore lettura anni\n");
+			return;
+		}
+		this.boxAnno.getItems().addAll(this.model.getYearsAndCount());
 	}
 }
